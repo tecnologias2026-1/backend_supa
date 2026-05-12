@@ -4,7 +4,7 @@ $databaseUrl = getenv('DATABASE_URL') ?: '';
 
 $host = getenv('DB_HOST') ?: 'aws-1-us-west-2.pooler.supabase.com';
 $user = getenv('DB_USER') ?: 'postgres.vffcogryczymyudiavyt';
-$password = getenv('DB_PASSWORD') ?: 'multimedia123';
+$password = getenv('DB_PASSWORD') ?: 'baSfaFH3tSVfFkKw';
 $name = getenv('DB_NAME') ?: 'postgres';
 $port = getenv('DB_PORT') ?: '5432';
 
