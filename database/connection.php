@@ -1,15 +1,35 @@
 <?php
 // Database connection - Supabase PostgreSQL
-define('DB_HOST', getenv('DB_HOST') ?: 'aws-1-us-west-2.pooler.supabase.com');
-define('DB_USER', getenv('DB_USER') ?: 'postgres.vffcogryczymyudiavyt');
-define('DB_PASSWORD', getenv('DB_PASSWORD') ?: '');
-define('DB_NAME', getenv('DB_NAME') ?: 'postgres');
-define('DB_PORT', getenv('DB_PORT') ?: 5432);
+$databaseUrl = getenv('DATABASE_URL') ?: '';
+
+$host = getenv('DB_HOST') ?: 'aws-1-us-west-2.pooler.supabase.com';
+$user = getenv('DB_USER') ?: 'postgres.vffcogryczymyudiavyt';
+$password = getenv('DB_PASSWORD') ?: '';
+$name = getenv('DB_NAME') ?: 'postgres';
+$port = getenv('DB_PORT') ?: '5432';
+
+// Render commonly exposes PostgreSQL credentials via DATABASE_URL.
+if ($databaseUrl !== '') {
+  $parts = parse_url($databaseUrl);
+  if ($parts !== false) {
+    $host = $parts['host'] ?? $host;
+    $user = $parts['user'] ?? $user;
+    $password = isset($parts['pass']) ? rawurldecode($parts['pass']) : $password;
+    $name = isset($parts['path']) ? ltrim($parts['path'], '/') : $name;
+    $port = isset($parts['port']) ? (string)$parts['port'] : $port;
+  }
+}
+
+if ($password === '') {
+  die(json_encode([
+    'error' => 'Error de configuracion: falta DB_PASSWORD o DATABASE_URL en variables de entorno.'
+  ]));
+}
 
 // Create PostgreSQL connection using PDO
 try {
-  $dsn = 'pgsql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME;
-  $conn = new PDO($dsn, DB_USER, DB_PASSWORD, [
+  $dsn = 'pgsql:host=' . $host . ';port=' . $port . ';dbname=' . $name . ';sslmode=require';
+  $conn = new PDO($dsn, $user, $password, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
   ]);
