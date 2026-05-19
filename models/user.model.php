@@ -2,7 +2,8 @@
 require_once __DIR__ . '/../database/connection.php';
 
 global $conn;
-
+echo "Conectado a la base de datos en user.model.php\n";
+echo json_encode(getUsersModel()) ? "Usuarios obtenidos correctamente\n" : "Error obteniendo usuarios\n";
 function getUsersModel() {
   global $conn;
   
